@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { connect } from "react-redux";
 import { addSmurf, setError } from "../actions";
 
-const AddForm = (props) => {
-    const { errorMessage, setError, addSmurf } = props;
+const AddForm = ({ addSmurf, setError, errorMessage }) => {
     const [state, setState] = useState({
         name:"",
         position:"",
@@ -25,11 +24,19 @@ const AddForm = (props) => {
     const handleSubmit = e => {
         e.preventDefault();
         if (state.name === "" || state.position === "" || state.nickname === "") {
-            setError(errorMessage);
+            setError("Name, position and nickname fields are required.");
+        } else {
+            addSmurf(state);
+            setState({
+                name:"",
+                position:"",
+                nickname:"",
+                description:""
+            });
         }
-        addSmurf(state);
+        
     }
-    
+
     // Replace all instances of the errorMessage static variable with your error message state value.
     return(<section>
         <h2>Add Smurf</h2>
@@ -51,7 +58,7 @@ const AddForm = (props) => {
                 <textarea onChange={handleChange} value={state.description} name="description" id="description" />
             </div>
             {
-                errorMessage && <div data-testid="errorAlert" className="alert alert-danger" role="alert">Error: {state.errorMessage}</div>
+                errorMessage && <div data-testid="errorAlert" className="alert alert-danger" role="alert">Error: {errorMessage}</div>
             }
             <button>Submit Smurf</button>
         </form>
